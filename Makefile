@@ -20,14 +20,13 @@ FLAGS		=	-Wall -Wextra -Werror -std=c++98
 
 SRCS		=	main.cpp
 
-HEADER_CON	=	vector.hpp list.hpp stack.hpp queue.hpp map.hpp
-HEADER_TEM	=	type1_or_type2.hpp stl_like.hpp
-HEADER_ITE	=	vector_iterator.hpp rev_vector_iterator.hpp \
-				list_iterator.hpp rev_list_iterator.hpp map_iterator.hpp rev_map_iterator.hpp
+HEADER_CON	=	vector.hpp 
+HEADER_TEM	=	
+HEADER_ITE	=	 \
 
-PATH_CON	=	containers/
-PATH_TEM	=	templates/
-PATH_ITE	=	iterators/
+PATH_CON	=	
+PATH_TEM	=	
+PATH_ITE	=	
 				
 OBJS		=	$(SRCS:.cpp=.o)
 
