@@ -20,9 +20,9 @@ FLAGS		=	-Wall -Wextra -Werror -std=c++98
 
 SRCS		=	main.cpp
 
-HEADER_CON	=	vector.hpp 
+HEADER_CON	=	vector.hpp iterator.hpp colours.hpp utils.hpp
 HEADER_TEM	=	
-HEADER_ITE	=	 \
+HEADER_ITE	=
 
 PATH_CON	=	
 PATH_TEM	=	

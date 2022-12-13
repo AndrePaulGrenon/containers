@@ -9,10 +9,10 @@ namespace ft
     template <typename Iter>
     struct iterator_traits
     {
-        typedef typename Iter::difference_type difference_type;
-        typedef typename Iter::value_type value_type;
-        typedef typename Iter::pointer pointer;
-        typedef typename Iter::reference reference;
+        typedef typename Iter::difference_type  difference_type;
+        typedef typename Iter::value_type       value_type;
+        typedef typename Iter::pointer          pointer;
+        typedef typename Iter::reference        reference;
         typedef typename Iter::iterator_category iterator_category;
     };
 
@@ -22,6 +22,7 @@ namespace ft
     {
         typedef T value_type;
         typedef Difference difference_type;
+
         typedef Pointer pointer;
         typedef Reference reference;
         typedef Category iterator_category;

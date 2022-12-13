@@ -34,18 +34,13 @@ namespace ft
 
     //   [ CONSTRUCTORS ]
         explicit vector (const allocator_type& alloc = allocator_type()): _m_allocator(alloc), _start(nullptr), 
-            _end(nullptr), _size(0), _capacity(0) {std::cout << "explicit vide" << std::endl; return ;}
+            _end(nullptr), _size(0), _capacity(0) {return ;}
         explicit vector (size_type n, const value_type& val = value_type(), 
             const allocator_type& alloc = allocator_type()) : _m_allocator(alloc), _size(n), _capacity(n)
             {
-
                 _start = _m_allocator.allocate(n + 1);
-                std::cout << "explicit construct :" << val << std::endl;
                 for (size_t i = 0; i < n; i++)
-                {
                     _m_allocator.construct(&_start[i], val);
-                    //std::cout << "Value [" << i << "] = " << _start[i] << std::endl;
-                }
                 _m_allocator.construct(&_start[n], NULL);
                 _end = &_start[n];
                 return ;
@@ -56,7 +51,6 @@ namespace ft
             , typename enable_if< !is_integral<InputIterator>::value, InputIterator >::type* = 0
             ) : _m_allocator(alloc)
         {
-            std::cout << "Iterator constructor" << std::endl;
             size_t  n = 0;
             for(InputIterator it = first; it != last; it++)
                 n++;
@@ -64,18 +58,26 @@ namespace ft
             _size = n;
             _capacity = n;
             for (size_t i = 0; i < n; i++)
-            {
                 _m_allocator.construct(&_start[i],*(first++));
-                std::cout << "Value [" << i << "] = " << _start[i] << std::endl;
-            }
             _m_allocator.construct(&_start[n], NULL);
             _end = &_start[n];
             return ;
         }
 
-        vector(const vector& x)
+        vector(vector& x) : _m_allocator(x._m_allocator), _size(x.size()), _capacity(x.capacity())
         {
-            (void)x;
+            int i = 0;
+            typename ft::vector<T>::Iterator ite = x.end();
+            typename ft::vector<T>::Iterator newIt = x.begin();
+            
+            _start = _m_allocator.allocate(capacity() + 1);
+            for (typename ft::vector<T>::Iterator it = x.begin(); it != ite; it++)
+            {
+                _m_allocator.construct(&_start[i],*it);
+                i++;
+            }
+            _m_allocator.construct(&_start[i], NULL);
+            _end = &_start[i];
             return;
         }
         
@@ -98,18 +100,15 @@ namespace ft
 
         public:
 
-        // [ ITERATOR STRUCT ]
-
-        //template<typename T>
-        struct   Iterator : iterator_base<ft::random_access_iterator_tag, T>
+        struct   Iterator : ft::iterator_base<ft::random_access_iterator_tag, T>
         {
-            
+            /*
             typedef ft::random_access_iterator_tag  iterator_category;
             //std::ptrdiff: Int for 64-bits systems if value > INT_MAX , won't crash
             typedef std::ptrdiff_t     difference_type;
             typedef T                           value_type;
             typedef value_type*                 pointer;
-            typedef value_type&                 reference;
+            typedef value_type&                 reference;*/
 
             Iterator() {}
             ~Iterator(){}
@@ -123,10 +122,17 @@ namespace ft
             reference       operator*(void) {return (*this->_m_ptr);}
             
             //Input Iterator Incrementation
-            Iterator        &operator++(void) {++this->_m_ptr; return (*this);}
-            Iterator        &operator--(void) {--this->_m_ptr; return (*this);}
-            Iterator        operator++(int) {pointer temp = this->_m_ptr; ++this->_m_ptr; return (temp);}
-            Iterator        operator--(int) {pointer temp = this->_m_ptr; --this->_m_ptr; return (temp);}
+            Iterator        &operator++(void) {this->_m_ptr = this->_m_ptr + 1;return (*this);}
+            Iterator        &operator--(void) {this->_m_ptr = this->_m_ptr - 1;return (*this);}
+            Iterator        operator++(int){pointer temp = this->_m_ptr;this->_m_ptr = this->_m_ptr + 1;
+                return (temp);
+            }
+            Iterator        operator--(int) 
+            {
+                pointer temp = this->_m_ptr;
+                this->_m_ptr = this->_m_ptr - 1;
+                return (temp);
+            }
             
             //Random Access to data
             reference       operator[](size_type n) {this->_m_ptr += n; return (*this->_m_ptr);}
@@ -192,13 +198,57 @@ namespace ft
 
         void        shrink_to_fit(void)
         {
-            
-            if (size() + 1 < capacity())
+            if (size() + 2 < capacity())
             {
-                //_m_allocator.deallocate(_end + 1, capacity() - size());
+                pointer temp = _m_allocator.allocate(this->size() + 1, _start);
+                for (size_t i = 0; i < _size; i++)
+                    _m_allocator.construct(&temp[i], _start[i]);
+                _m_allocator.destroy(_start);
+                _m_allocator.deallocate(_start, capacity() + 1);
+                _start = temp;
                 _capacity = _size;
             }
         }
+        
+        //MODIFIER MEMBER FUNCTIONS
+
+        void        clear(void) 
+        {
+            Iterator ite = end();
+            for (Iterator it = begin(); it != ite; it++)
+                *it = 0; _size = 0; 
+        }
+
+        template <class InputIterator>
+        void        assign(InputIterator first, InputIterator last 
+                    ,typename enable_if<is_input_iterator_tag<typename InputIterator::iterator_category>::value
+                    , typename InputIterator::iterator_category >::type* = 0)
+        {
+            (void) first;
+            (void) last;
+            std::cout << "Inside of assign function" << std::endl;
+        }
+
+        void    push_back(const value_type& val)
+        {
+            if (this->size() >= this->capacity())
+            {
+                this->reserve(this->capacity() * 2);
+            }
+            _m_allocator.construct(&_start[size()], val);
+            _size++;
+        }
+
+        void    pop_back(void)
+        {
+            _m_allocator.Destroy(&_start[size() - 1]);
+            _start[size() - 1] = NULL;
+            _size--;
+        }
+
+        iterator insert
+        
+
     };
 }
 

@@ -70,4 +70,5 @@ struct is_integral<long long>{ static const bool value = true;};
 template<>
 struct is_integral<unsigned long long>{ static const bool value = true;};
 
+
 #endif
